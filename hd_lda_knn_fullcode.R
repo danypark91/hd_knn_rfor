@@ -35,6 +35,7 @@ plot(df_lda_model)
 
 #Prediction of the model to the test dataset
 df_lda_model_fit <- predict(df_lda_model, newdata=test_df)
+names(df_lda_model_fit) #output categories
 
 #Confusion Matrix of the LDA
 library(caret)
