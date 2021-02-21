@@ -1,3 +1,7 @@
+##------------------------------------------------------------------------------------##
+##                                     FULL CODE                                      ##
+##------------------------------------------------------------------------------------##
+
 #Import Dataset from the local device
 df <- read.csv("Heart.csv", header = TRUE)
 
@@ -27,7 +31,7 @@ test_df = subset(df,sample==FALSE)
 #Linear Dicriminant Analysis
 #Fit the train_df with lda function
 library(MASS)
-df_lda_model <- lda(target~., data=train_df)
+df_lda_model <- lda(target~., data=train_df, prior=c(99/217,118/217)) #probability unknow, ratio of response variable
 df_lda_model
 
 #plot the summary
@@ -43,8 +47,8 @@ confusionMatrix(factor(df_lda_model_fit$class), factor(test_df$target), positive
 
 #Prediction plot
 ldahist(df_lda_model_fit$x[,1], df_lda_model_fit$class)
-newdata <- data.frame(class = df_lda_model_fit$class, LD1 = df_lda_model_fit$x[,1], target = test_df$target)
-ggplot(newdata)+
+lda_data <- data.frame(class = df_lda_model_fit$class, LD1 = df_lda_model_fit$x[,1], target = test_df$target)
+ggplot(lda_data)+
   geom_point(aes(LD1, class, color=as.factor(target)))+
   labs(title="Classification Distribution",
        x="LD1",
@@ -67,4 +71,5 @@ df_lda_auc <- performance(df_lda_prediction, measure = "auc")
 df_lda_auc <- df_lda_auc@y.values[[1]]
 df_lda_auc
 
+#K-Nearest Neighbor
 
