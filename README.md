@@ -1,4 +1,4 @@
-# hd_lda_knn
+# hd_knn_rfor
 Random Forest and K-Nearest Neighbors analysis of Heart Disease dataset using RStudio. Also compare with [Logistic Regression](https://github.com/danypark91/hd_log_reg) to figure which is better model to predict the dataset.
 
 ### Tech/Framework used
