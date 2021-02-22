@@ -41,48 +41,42 @@ table(knn_15, test_df$target)
 mean(knn_15 != test_df$target) #knn error rate
 
 
-#error vs number of neighbors
+#Error vs number of neighbors
 knn_err <- list() #empty list
 
 for (i in 1:15){
   #KNN
-  temp<-mean((knn(train=train_df[1:13], test=test_df[1:13], cl=train_df$target, k=i)) != test_df$target)
+  temp <- mean((knn(train=train_df[1:13], test=test_df[1:13], cl=train_df$target, k=i)) != test_df$target)
   knn_err[[i]] <- temp
 }
 
 #Plot of K vs Error list
 x <- seq(1, 15, by=1)
-plot(x,knn_err, type="l", 
+plot(x,knn_err, type="b", 
      xlab="K", ylab="Error Rate", main="K vs Error Rate", col="Red")
 
+#K=9, Fit KNN
+df_knn_model <- knn(train=train_df[1:13], test=test_df[1:13], cl=train_df$target, k=9)
+df_knn_model_acc <- mean(df_knn_model == test_df$target)
+df_knn_model_err <- mean(df_knn_model != test_df$target)
 
+print(paste("Accuracy of the Model : ", round(df_knn_model_acc,4)))
+print(paste("Error of the Model : ", round(df_knn_model_err,4)))
 
-#plot the summary
-plot(df_lda_model)
-
-#Prediction of the model to the test dataset
-df_lda_model_fit <- predict(df_lda_model, newdata=test_df)
-names(df_lda_model_fit) #output categories
 
 #Confusion Matrix of the LDA
 library(caret)
-confusionMatrix(factor(df_lda_model_fit$class), factor(test_df$target), positive=as.character(1))
+confusionMatrix(factor(df_knn_model), factor(test_df$target), positive=as.character(1))
 
-#Prediction plot
-ldahist(df_lda_model_fit$x[,1], df_lda_model_fit$class)
-lda_data <- data.frame(class = df_lda_model_fit$class, LD1 = df_lda_model_fit$x[,1], target = test_df$target)
-ggplot(lda_data)+
-  geom_point(aes(LD1, class, color=as.factor(target)))+
-  labs(title="Classification Distribution",
-       x="LD1",
-       y="Class")+
-  theme_bw()
+library(kknn)
+df_knn_model.alt <- train.kknn(as.factor(target)~., train_df, ks=9,  method="knn", scale=TRUE)
+df_knn_model_fit <- predict(df_knn_model.alt, test_df, type="prob")[,2]
 
 #ROC and AUC of the plot
 library(ROCR)
-df_lda_prediction <- prediction(df_lda_model_fit$x[,1], test_df$target)
-df_lda_performance <- performance(df_lda_prediction, measure = "tpr", x.measure = "fpr")
-df_lda_roc <- plot(df_lda_performance, col="Red",
+df_knn_prediction <- prediction(df_knn_model_fit, test_df$target)
+df_lda_performance <- performance(df_knn_prediction, measure = "tpr", x.measure = "fpr")
+df_knn_roc <- plot(df_lda_performance, col="Red",
                    main="ROC Curve",
                    xlab="False Positive Rate",
                    ylab="True Positive Rate")+
@@ -90,9 +84,9 @@ df_lda_roc <- plot(df_lda_performance, col="Red",
   abline(v=0, h=1, col="Blue", lty=3)+
   plot(df_lda_performance, col="Red",add=TRUE)
 
-df_lda_auc <- performance(df_lda_prediction, measure = "auc")
-df_lda_auc <- df_lda_auc@y.values[[1]]
-df_lda_auc
+df_knn_auc <- performance(df_knn_prediction, measure = "auc")
+df_knn_auc <- df_knn_auc@y.values[[1]]
+df_knn_auc
 
-#K-Nearest Neighbor
+#Random Forest
 
