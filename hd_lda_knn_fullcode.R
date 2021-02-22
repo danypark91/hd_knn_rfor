@@ -9,30 +9,53 @@ df <- read.csv("Heart.csv", header = TRUE)
 colnames(df)[colnames(df)=='ï..age'] <- 'age'
 str(df)
 
-#Check the type and convert the categorical variable into factors
-head(df)
-str(df)
-df$sex <- as.factor(df$sex)
-df$cp <- as.factor(df$cp)
-df$fbs <- as.factor(df$fbs)
-df$restecg <- as.factor(df$restecg)
-df$exang <- as.factor(df$exang)
-df$slope <- as.factor(df$slope)
-df$thal <- as.factor(df$thal)
+#Check the type and convert the dependent variable into factors
+df$target <- as.factor(df$target)
+
+#Normalize the dataframe
+normalize <- function(x){
+  return ((x - min(x))/(max(x) - min(x)))
+}
+norm_df <- as.data.frame(lapply(df[,1:13], normalize))
+head(norm_df,5)
+
+#Combine the normalized dataframe with the target variable
+norm_df <- cbind(norm_df, df$target)
+colnames(norm_df)[colnames(norm_df)=="df$target"] <- "target"
+head(norm_df,5)
 
 #Split into Train and Test Datasets
 library(caTools)
 set.seed(1234)
 
-sample = sample.split(df, SplitRatio = 0.75)
-train_df = subset(df, sample==TRUE)
-test_df = subset(df,sample==FALSE)
+sample = sample.split(norm_df, SplitRatio = 0.75)
+train_df = subset(norm_df, sample==TRUE)
+test_df = subset(norm_df,sample==FALSE)
 
-#Linear Dicriminant Analysis
-#Fit the train_df with lda function
-library(MASS)
-df_lda_model <- lda(target~., data=train_df, prior=c(99/217,118/217)) #probability unknow, ratio of response variable
-df_lda_model
+#K-Nearest Neighbor sample run, k=15
+library(class)
+knn_15 <- knn(train=train_df[1:13], test=test_df[1:13], cl=train_df$target, k=15)
+
+#Predictability of the above model
+table(knn_15, test_df$target)
+mean(knn_15 != test_df$target) #knn error rate
+
+
+#error vs number of neighbors
+knn_err <- list() #empty list
+
+for (i in 1:15){
+  #KNN
+  temp<-mean((knn(train=train_df[1:13], test=test_df[1:13], cl=train_df$target, k=i)) != test_df$target)
+  knn_err[[i]] <- temp
+}
+
+#Plot of K vs Error list
+x <- seq(1, 15, by=1)
+plot(x,knn_err, type="l", 
+     xlab="K", ylab="Error Rate", main="K vs Error Rate", col="Red")
+
+
 
 #plot the summary
 plot(df_lda_model)
