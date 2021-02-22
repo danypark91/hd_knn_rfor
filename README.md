@@ -7,12 +7,13 @@ Random Forest and K-Nearest Neighbors analysis of Heart Disease dataset using RS
 
 ### RStudio Library used
 * library(caTools)
+* library(class)
 * library(MASS)
 * library(caret)
 * library(ROCR)
 
 ### Installation of R packages
-`rpack <- c("MASS", "caret", "caTools", "ROCR")`
+`rpack <- c("MASS", "caret", "class","caTools", "ROCR")`
 
 `install.packages(rpack)`
 
