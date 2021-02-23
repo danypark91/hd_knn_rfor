@@ -40,7 +40,6 @@ knn_15 <- knn(train=train_df[1:13], test=test_df[1:13], cl=train_df$target, k=15
 table(knn_15, test_df$target)
 mean(knn_15 != test_df$target) #knn error rate
 
-
 #Error vs number of neighbors
 knn_err <- list() #empty list
 
@@ -52,8 +51,8 @@ for (i in 1:15){
 
 #Plot of K vs Error list
 x <- seq(1, 15, by=1)
-plot(x,knn_err, type="b", 
-     xlab="K", ylab="Error Rate", main="K vs Error Rate", col="Red")
+knn_errplot <- plot(x, knn_err, type="b", axes=TRUE,
+                    xlab="K", ylab="Error Rate", main="K vs Error of KNN", col="Red")
 
 #K=9, Fit KNN
 df_knn_model <- knn(train=train_df[1:13], test=test_df[1:13], cl=train_df$target, k=9)
@@ -62,7 +61,6 @@ df_knn_model_err <- mean(df_knn_model != test_df$target)
 
 print(paste("Accuracy of the Model : ", round(df_knn_model_acc,4)))
 print(paste("Error of the Model : ", round(df_knn_model_err,4)))
-
 
 #Confusion Matrix of the KNN
 library(caret)
@@ -88,5 +86,38 @@ df_knn_auc <- performance(df_knn_prediction, measure = "auc")
 df_knn_auc <- df_knn_auc@y.values[[1]]
 df_knn_auc
 
-#Random Forest
+#Decision Tree
+#Convert categorical variable from int to factor
+df <- read.csv("Heart.csv", header = TRUE)
+colnames(df)[colnames(df)=='ï..age'] <- 'age'
 
+df$sex <- as.factor(df$sex)
+df$cp <- as.factor(df$cp)
+df$fbs <- as.factor(df$fbs)
+df$restecg <- as.factor(df$restecg)
+df$exang <- as.factor(df$exang)
+df$slope <- as.factor(df$slope)
+df$thal <- as.factor(df$thal)
+
+#Split into Train and Test Datasets
+library(caTools)
+set.seed(1234)
+
+sample_dt = sample.split(df, SplitRatio = 0.75)
+train_dt_df = subset(df, sample_dt==TRUE)
+test_dt_df = subset(df,sample_dt==FALSE)
+
+#Decision Tree for the train model
+library(rpart)
+
+df_dt_model <- rpart(target~., data=train_dt_df, method = "class") #regression tree
+printcp(df_dt_model) # display the results
+plotcp(df_dt_model) # visualize cross-validation results
+
+#ConfusionMatrix
+df_dt_model_fit <- predict(df_dt_model, newdata=test_dt_df, type="prob")[,2]
+df_dt_model_conf <- ifelse(df_dt_model_fit>0.5,1,0)
+
+confusionMatrix(factor(df_dt_model_conf), factor(test_dt_df$target), positive=as.character(1))
+
+#ROC Curve and AUC Score
