@@ -64,7 +64,7 @@ print(paste("Accuracy of the Model : ", round(df_knn_model_acc,4)))
 print(paste("Error of the Model : ", round(df_knn_model_err,4)))
 
 
-#Confusion Matrix of the LDA
+#Confusion Matrix of the KNN
 library(caret)
 confusionMatrix(factor(df_knn_model), factor(test_df$target), positive=as.character(1))
 
