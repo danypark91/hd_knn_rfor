@@ -121,3 +121,5 @@ df_dt_model_conf <- ifelse(df_dt_model_fit>0.5,1,0)
 confusionMatrix(factor(df_dt_model_conf), factor(test_dt_df$target), positive=as.character(1))
 
 #ROC Curve and AUC Score
+
+
