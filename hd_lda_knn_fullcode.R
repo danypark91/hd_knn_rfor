@@ -73,14 +73,14 @@ df_knn_model_fit <- predict(df_knn_model.alt, test_df, type="prob")[,2]
 #ROC and AUC of the plot
 library(ROCR)
 df_knn_prediction <- prediction(df_knn_model_fit, test_df$target)
-df_lda_performance <- performance(df_knn_prediction, measure = "tpr", x.measure = "fpr")
-df_knn_roc <- plot(df_lda_performance, col="Red",
+df_knn_performance <- performance(df_knn_prediction, measure = "tpr", x.measure = "fpr")
+df_knn_roc <- plot(df_knn_performance, col="Red",
                    main="ROC Curve",
                    xlab="False Positive Rate",
                    ylab="True Positive Rate")+
   abline(a=0, b=1, col="Grey", lty=2)+
   abline(v=0, h=1, col="Blue", lty=3)+
-  plot(df_lda_performance, col="Red",add=TRUE)
+  plot(df_knn_performance, col="Red",add=TRUE)
 
 df_knn_auc <- performance(df_knn_prediction, measure = "auc")
 df_knn_auc <- df_knn_auc@y.values[[1]]
@@ -121,5 +121,16 @@ df_dt_model_conf <- ifelse(df_dt_model_fit>0.5,1,0)
 confusionMatrix(factor(df_dt_model_conf), factor(test_dt_df$target), positive=as.character(1))
 
 #ROC Curve and AUC Score
+df_dt_prediction <- prediction(df_dt_model_fit, test_dt_df$target)
+df_dt_performance <- performance(df_dt_prediction, measure = "tpr", x.measure = "fpr")
+df_dt_roc <- plot(df_dt_performance, col="Red",
+                  main="ROC Curve",
+                  xlab="False Positive Rate",
+                  ylab="True Positive Rate")+
+  abline(a=0, b=1, col="Grey", lty=2)+
+  abline(v=0, h=1, col="Blue", lty=3)+
+  plot(df_dt_performance, col="Red",add=TRUE)
 
-
+df_dt_auc <- performance(df_dt_prediction, measure="auc")
+df_dt_auc <- df_dt_auc@y.values[[1]]
+df_dt_auc
