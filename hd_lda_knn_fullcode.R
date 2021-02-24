@@ -110,12 +110,15 @@ test_dt_df = subset(df,sample_dt==FALSE)
 #Decision Tree for the train model
 library(rpart)
 
-df_dt_model <- rpart(target~., data=train_dt_df, method = "class") #regression tree
+df_dt_model <- rpart(target~., data=train_dt_df, method = "class") #response variable = factor
 printcp(df_dt_model) # display the results
 plotcp(df_dt_model) # visualize cross-validation results
 
+#Prune the tree based on the result
+df_dt_prune <- prune(df_dt_model, cp=df_dt_model$cptable[which.min(df_dt_model$cptable[,"xerror"]),"CP"])
+
 #ConfusionMatrix
-df_dt_model_fit <- predict(df_dt_model, newdata=test_dt_df, type="prob")[,2]
+df_dt_model_fit <- predict(df_dt_prune, newdata=test_dt_df, type="prob")[,2]
 df_dt_model_conf <- ifelse(df_dt_model_fit>0.5,1,0)
 
 confusionMatrix(factor(df_dt_model_conf), factor(test_dt_df$target), positive=as.character(1))
