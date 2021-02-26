@@ -86,6 +86,7 @@ df_knn_auc <- performance(df_knn_prediction, measure = "auc")
 df_knn_auc <- df_knn_auc@y.values[[1]]
 df_knn_auc
 
+
 #Decision Tree
 #Convert categorical variable from int to factor
 df <- read.csv("Heart.csv", header = TRUE)
@@ -121,10 +122,10 @@ df_dt_prune <- prune(df_dt_model, cp=df_dt_model$cptable[which.min(df_dt_model$c
 df_dt_model_fit <- predict(df_dt_prune, newdata=test_dt_df, type="prob")[,2]
 df_dt_model_conf <- ifelse(df_dt_model_fit>0.5,1,0)
 
-confusionMatrix(factor(df_dt_model_conf), factor(test_dt_df$target), positive=as.character(1))
+confusionMatrix(as.factor(df_dt_model_conf), as.factor(test_dt_df$target), positive=as.character(1))
 
 #ROC Curve and AUC Score
-df_dt_prediction <- prediction(df_dt_model_fit, factor(test_dt_df$target))
+df_dt_prediction <- prediction(df_dt_model_fit, as.factor(test_dt_df$target))
 df_dt_performance <- performance(df_dt_prediction, measure = "tpr", x.measure = "fpr")
 df_dt_roc <- plot(df_dt_performance, col="Red",
                   main="ROC Curve - Decision Tree",
@@ -138,6 +139,7 @@ df_dt_auc <- performance(df_dt_prediction, measure="auc")
 df_dt_auc <- df_dt_auc@y.values[[1]]
 df_dt_auc
 
+
 #Comparison with the other classification methods
 #Logistic Regression Model
 library(MASS)
@@ -150,9 +152,9 @@ confusionMatrix(factor(df_model_confmat), factor(test_dt_df$target), positive=as
 df_prediction <- prediction(df_model_fit, test_dt_df$target)
 df_performance <- performance(df_prediction, measure = "tpr", x.measure="fpr")
 
-plot(df_performance, col = "Red", 
-     main = "ROC Curve - Logistic Regression",
-     xlab="False Postiive Rate", ylab="True Positive Rate")+
+df_log_roc <- plot(df_performance, col = "Red", 
+                   main = "ROC Curve - Logistic Regression",
+                   xlab="False Postiive Rate", ylab="True Positive Rate")+
   abline(a=0, b=1, col= "Grey", lty=2)+
   abline(v=0, h=1, col= "Blue", lty=3)+
   plot(df_performance, col = "Red", 
@@ -160,6 +162,7 @@ plot(df_performance, col = "Red",
        xlab="False Postiive Rate", ylab="True Positive Rate",add=TRUE)
 
 df_auc <- performance(df_prediction, measure = "auc")
-df_auc <- df_auc@y.values
-print(paste("AUC Score: ", lapply(df_auc,round,3)))
+df_auc <- df_auc@y.values[[1]]
+print(paste("AUC Score: ", lapply(df_auc,round,4)))
+
 
