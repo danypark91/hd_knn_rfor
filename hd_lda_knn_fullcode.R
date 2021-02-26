@@ -137,3 +137,5 @@ df_dt_roc <- plot(df_dt_performance, col="Red",
 df_dt_auc <- performance(df_dt_prediction, measure="auc")
 df_dt_auc <- df_dt_auc@y.values[[1]]
 df_dt_auc
+
+#Comparison with the other classification methods
