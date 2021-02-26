@@ -110,7 +110,7 @@ test_dt_df = subset(df,sample_dt==FALSE)
 #Decision Tree for the train model
 library(rpart)
 
-df_dt_model <- rpart(target~., data=train_dt_df, method = "class") #response variable = factor
+df_dt_model <- rpart(as.factor(target)~., data=train_dt_df, method = "class") #response variable = factor
 printcp(df_dt_model) # display the results
 plotcp(df_dt_model) # visualize cross-validation results
 
@@ -124,7 +124,7 @@ df_dt_model_conf <- ifelse(df_dt_model_fit>0.5,1,0)
 confusionMatrix(factor(df_dt_model_conf), factor(test_dt_df$target), positive=as.character(1))
 
 #ROC Curve and AUC Score
-df_dt_prediction <- prediction(df_dt_model_fit, test_dt_df$target)
+df_dt_prediction <- prediction(df_dt_model_fit, factor(test_dt_df$target))
 df_dt_performance <- performance(df_dt_prediction, measure = "tpr", x.measure = "fpr")
 df_dt_roc <- plot(df_dt_performance, col="Red",
                   main="ROC Curve - Decision Tree",
