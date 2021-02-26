@@ -13,9 +13,10 @@ Decision Tree and K-Nearest Neighbors analysis of Heart Disease dataset using RS
 * library(ROCR)
 * library(rpart)
 * library(rpart.plot)
+* library(tidyverse)
 
 ### Installation of R packages
-`rpack <- c("kknn", "caret", "class","caTools", "ROCR", "rpart", "rpart.plot")`
+`rpack <- c("kknn", "caret", "class","caTools", "ROCR", "rpart", "rpart.plot","tidyverse")`
 
 `install.packages(rpack)`
 
