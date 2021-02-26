@@ -64,7 +64,7 @@ print(paste("Error of the Model : ", round(df_knn_model_err,4)))
 
 #Confusion Matrix of the KNN
 library(caret)
-confusionMatrix(factor(df_knn_model), factor(test_df$target), positive=as.character(1))
+df_knn_conf <- confusionMatrix(factor(df_knn_model), factor(test_df$target), positive=as.character(1))
 
 library(kknn)
 df_knn_model.alt <- train.kknn(as.factor(target)~., train_df, ks=9,  method="knn", scale=TRUE)
@@ -122,7 +122,7 @@ df_dt_prune <- prune(df_dt_model, cp=df_dt_model$cptable[which.min(df_dt_model$c
 df_dt_model_fit <- predict(df_dt_prune, newdata=test_dt_df, type="prob")[,2]
 df_dt_model_conf <- ifelse(df_dt_model_fit>0.5,1,0)
 
-confusionMatrix(as.factor(df_dt_model_conf), as.factor(test_dt_df$target), positive=as.character(1))
+df_dt_conf <- confusionMatrix(as.factor(df_dt_model_conf), as.factor(test_dt_df$target), positive=as.character(1))
 
 #ROC Curve and AUC Score
 df_dt_prediction <- prediction(df_dt_model_fit, as.factor(test_dt_df$target))
@@ -147,14 +147,14 @@ df_model.part <- glm(target~sex+cp+trestbps+thalach+oldpeak+ca, data=train_dt_df
 df_model_fit <- predict(df_model.part, newdata=test_dt_df, type="response")
 df_model_confmat <- ifelse(df_model_fit >0.5, 1, 0)
 
-confusionMatrix(factor(df_model_confmat), factor(test_dt_df$target), positive=as.character(1))
+df_log_conf <- confusionMatrix(factor(df_model_confmat), factor(test_dt_df$target), positive=as.character(1))
 
 df_prediction <- prediction(df_model_fit, test_dt_df$target)
 df_performance <- performance(df_prediction, measure = "tpr", x.measure="fpr")
 
-df_log_roc <- plot(df_performance, col = "Red", 
-                   main = "ROC Curve - Logistic Regression",
-                   xlab="False Postiive Rate", ylab="True Positive Rate")+
+plot(df_performance, col = "Red", 
+     main = "ROC Curve - Logistic Regression",
+     xlab="False Postiive Rate", ylab="True Positive Rate")+
   abline(a=0, b=1, col= "Grey", lty=2)+
   abline(v=0, h=1, col= "Blue", lty=3)+
   plot(df_performance, col = "Red", 
@@ -165,4 +165,20 @@ df_auc <- performance(df_prediction, measure = "auc")
 df_auc <- df_auc@y.values[[1]]
 print(paste("AUC Score: ", lapply(df_auc,round,4)))
 
-
+#Accuracy Comparison
+#Model Fit summary dataframe
+df_ci <- data.frame(type=c("Logistic Regression", "9-Nearest Neighbor", "Decision Tree"), 
+                    acc=c(df_log_conf$overall[1], df_knn_conf$overall[1], df_dt_conf$overall[1]),
+                    lowci=c(df_log_conf$overall[3], df_knn_conf$overall[3], df_dt_conf$overall[3]),
+                    upci=c(df_log_conf$overall[4], df_knn_conf$overall[4], df_dt_conf$overall[4]),
+                    sens=c(df_log_conf$byClass[1], df_knn_conf$byClass[1], df_dt_conf$byClass[1]),
+                    spec=c(df_log_conf$byClass[2], df_knn_conf$byClass[2], df_dt_conf$byClass[2]),
+                    f1=c(df_log_conf$byClass[7], df_knn_conf$byClass[7], df_dt_conf$byClass[7]))
+#ROC Comparison
+plot(df_performance, main="ROC Curve: Comparison", col="Red")+
+  abline(a=0, b=1, col= "Grey", lty=2)+
+  abline(v=0, h=1, col= "Blue", lty=3)
+par(new=TRUE)
+plot(df_knn_performance, col="Orange")
+par(new=TRUE)
+plot(df_dt_performance, col="Dark Red")
