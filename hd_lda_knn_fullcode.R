@@ -75,7 +75,7 @@ library(ROCR)
 df_knn_prediction <- prediction(df_knn_model_fit, test_df$target)
 df_knn_performance <- performance(df_knn_prediction, measure = "tpr", x.measure = "fpr")
 df_knn_roc <- plot(df_knn_performance, col="Red",
-                   main="ROC Curve",
+                   main="ROC Curve - KNN",
                    xlab="False Positive Rate",
                    ylab="True Positive Rate")+
   abline(a=0, b=1, col="Grey", lty=2)+
@@ -127,7 +127,7 @@ confusionMatrix(factor(df_dt_model_conf), factor(test_dt_df$target), positive=as
 df_dt_prediction <- prediction(df_dt_model_fit, test_dt_df$target)
 df_dt_performance <- performance(df_dt_prediction, measure = "tpr", x.measure = "fpr")
 df_dt_roc <- plot(df_dt_performance, col="Red",
-                  main="ROC Curve",
+                  main="ROC Curve - Decision Tree",
                   xlab="False Positive Rate",
                   ylab="True Positive Rate")+
   abline(a=0, b=1, col="Grey", lty=2)+
@@ -139,3 +139,27 @@ df_dt_auc <- df_dt_auc@y.values[[1]]
 df_dt_auc
 
 #Comparison with the other classification methods
+#Logistic Regression Model
+library(MASS)
+df_model.part <- glm(target~sex+cp+trestbps+thalach+oldpeak+ca, data=train_dt_df, family=binomial(link="logit"))
+df_model_fit <- predict(df_model.part, newdata=test_dt_df, type="response")
+df_model_confmat <- ifelse(df_model_fit >0.5, 1, 0)
+
+confusionMatrix(factor(df_model_confmat), factor(test_dt_df$target), positive=as.character(1))
+
+df_prediction <- prediction(df_model_fit, test_dt_df$target)
+df_performance <- performance(df_prediction, measure = "tpr", x.measure="fpr")
+
+plot(df_performance, col = "Red", 
+     main = "ROC Curve - Logistic Regression",
+     xlab="False Postiive Rate", ylab="True Positive Rate")+
+  abline(a=0, b=1, col= "Grey", lty=2)+
+  abline(v=0, h=1, col= "Blue", lty=3)+
+  plot(df_performance, col = "Red", 
+       main = "ROC Curve - Logistic Regression",
+       xlab="False Postiive Rate", ylab="True Positive Rate",add=TRUE)
+
+df_auc <- performance(df_prediction, measure = "auc")
+df_auc <- df_auc@y.values
+print(paste("AUC Score: ", lapply(df_auc,round,3)))
+
