@@ -175,12 +175,22 @@ df_ci <- data.frame(type=c("Logistic Regression", "9-Nearest Neighbor", "Decisio
                     spec=c(df_log_conf$byClass[2], df_knn_conf$byClass[2], df_dt_conf$byClass[2]),
                     f1=c(df_log_conf$byClass[7], df_knn_conf$byClass[7], df_dt_conf$byClass[7]))
 
+#Accuracy Comparison with 95% Confidence Interval
 library(tidyverse)
+library(ggsci)
 ggplot(data=df_ci, aes(type,acc))+
   labs(title="Comparison of Classification", subtitle="Accuracy and Confidence Interval", x="Classification", y="Accuracy")+
   geom_point(size=5, aes(color=type))+
   geom_errorbar(aes(ymax=upci, ymin=lowci),width=0.2)+
-  theme_bw()
+  theme_bw()+
+  scale_fill_npg()
+
+#F1 Score
+ggplot(data=df_ci, aes(type, f1))+
+  geom_point(size=5, aes(color=type))+
+  labs(title="Comparison of Classification", subtitle="F1 Score", x="Classification Method", y="F1 Score")+
+  theme_bw()+
+  scale_fill_tron()
 
 #ROC Comparison
 plot(df_performance, main="ROC Curve: Comparison", col="Red")+
