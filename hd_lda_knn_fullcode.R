@@ -185,6 +185,7 @@ ggplot(data=df_ci, aes(type,acc))+
   theme_bw()+
   scale_fill_npg()
 
+
 #F1 Score
 ggplot(data=df_ci, aes(type, f1))+
   geom_point(size=5, aes(color=type))+
