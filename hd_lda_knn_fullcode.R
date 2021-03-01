@@ -188,9 +188,26 @@ ggplot(data=df_ci, aes(type,acc))+
 #F1 Score
 ggplot(data=df_ci, aes(type, f1))+
   geom_point(size=5, aes(color=type))+
+  geom_text(aes(label=round(f1,4), hjust=-0.3, vjust=0))+
   labs(title="Comparison of Classification", subtitle="F1 Score", x="Classification Method", y="F1 Score")+
   theme_bw()+
   scale_fill_tron()
+
+#Sensitivity
+ggplot(data=df_ci, aes(type, sens))+
+  geom_point(size=5, aes(color=type))+
+  geom_text(aes(label=round(sens,4), hjust=-0.3, vjust=0))+
+  labs(title="Comparison of Classification", subtitle="Sensitivity", x="Classification Method", y="F1 Score")+
+  theme_bw()+
+  scale_fill_npg()
+
+#Specificty
+ggplot(data=df_ci, aes(type, spec))+
+  geom_point(size=5, aes(color=type))+
+  geom_text(aes(label=round(spec,4), hjust=-0.3, vjust=0))+
+  labs(title="Comparison of Classification", subtitle="Specifity", x="Classification Method", y="F1 Score")+
+  theme_bw()+
+  scale_fill_npg()
 
 #ROC Comparison
 plot(df_performance, main="ROC Curve: Comparison", col="Red")+
