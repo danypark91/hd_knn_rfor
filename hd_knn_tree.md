@@ -3,7 +3,7 @@ hd\_knn\_tree
 Dany Park
 01/03/2021
 
-# K-Nearest Neighbor and Decision Tree
+# K-nearest neighbor and Decision Tree
 
 This project is to apply K-Nearest Neighbor and Decision Tree to the
 heart disease dataset and apply fitted model to predict the potential
@@ -17,9 +17,34 @@ includes data visualization of the same dataframe. It will walk through
 the step-by-step procedure of the regression analysis and the
 performance of the predicted model.
 
-## 1. K-Nearest Neighbor
+## 1. K-nearest neighbor
 
-### Overview of KNN
+### 1-1. Overview of KNN
+
+K-nearest neighbors(KNN) is considered to be one of the most simplest
+and well-known non-parametric methods. The algorithm does not assume the
+parametric form, which allows more flexible approach to perform
+analysis. The classification method indentifies the given K points that
+are closest to the training independent variable x0. Then the
+conditional probability for a particular class is estimated. The largest
+probability is used for KNN to apply Bayes Rule and classify the test
+observations.
+
+![knn\_example](https://i.imgur.com/XXWScgF.png)
+
+For example, assume that the K is chosen to be 3. Within the distanced
+boundary, two blue points are captured along with the orange point. The
+estimate probability for the blue equals to 2/3 and orange to 1/3. Then
+the algorithm predicts the boundary’s class as blue. The right-hand side
+presents the decision boundary of all possible values of x0 with
+applying KNN algorithm and k=3.
+
+### 1-2. Importation and Alteration of Data
+
+Before proceeding straight into the algorithm, I imported the project’s
+dataframe. Like the previous logistic regression project, the erronous
+attribute was corrected. However this time, the `knn` function required
+the response variable as the factor(categorical variable).
 
 ``` r
 #Import Dataset from the local device
@@ -31,6 +56,9 @@ colnames(df)[colnames(df)=='ï..age'] <- 'age'
 #Check the type and convert the dependent variable into factors
 df$target <- as.factor(df$target)
 ```
+
+Also, the normalization of all dependent variable was conducted prior to
+the analysis.
 
 ``` r
 #Normalization function
@@ -83,6 +111,8 @@ sample = sample.split(norm_df, SplitRatio = 0.75)
 train_df = subset(norm_df, sample==TRUE)
 test_df = subset(norm_df,sample==FALSE)
 ```
+
+### 1-3. Selection of K
 
 ``` r
 #K-Nearest Neighbor sample run, k=15
@@ -138,6 +168,8 @@ print(paste("Error of the Model : ", round(df_knn_model_err,4)))
 ```
 
     ## [1] "Error of the Model :  0.1744"
+
+### 1-4. Prediction and Performance Measure
 
 ``` r
 #Confusion Matrix of the KNN
@@ -201,7 +233,7 @@ library(ROCR)
 df_knn_prediction <- prediction(df_knn_model_fit, test_df$target)
 df_knn_performance <- performance(df_knn_prediction, measure = "tpr", x.measure = "fpr")
 df_knn_roc <- plot(df_knn_performance, col="Red",
-                   main="ROC Curve - KNN",
+                   main="ROC Curve - 9NN",
                    xlab="False Positive Rate",
                    ylab="True Positive Rate")+
   abline(a=0, b=1, col="Grey", lty=2)+
