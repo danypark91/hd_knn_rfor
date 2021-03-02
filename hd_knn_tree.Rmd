@@ -1,0 +1,54 @@
+---
+title: "hd_knn_tree"
+author: "Dany Park"
+date: "01/03/2021"
+output: html_document
+---
+# K-Nearest Neighbor and Decision Tree
+This project is to apply K-Nearest Neighbor and Decision Tree to the heart disease dataset and apply fitted model to predict the potential patient. Also, the models are compared with the Logistic Regression for their accuracy and predictability.
+
+The [hd_log_reg](https://github.com/danypark91/hd_log_reg/blob/main/hd_log_reg_rmarkdown.md) already consists extensive explanation of the dataset. The project includes data visualization of the same dataframe. It will walk through the step-by-step procedure of the regression analysis and the performance of the predicted model.
+
+## 1. K-Nearest Neighbor
+### Overview of KNN
+
+
+
+```{r Data Importation, echo=TRUE}
+#Import Dataset from the local device
+df <- read.csv("Heart.csv", header = TRUE)
+
+#change erronous attribute name: ï..age
+colnames(df)[colnames(df)=='ï..age'] <- 'age'
+
+#Check the type and convert the dependent variable into factors
+df$target <- as.factor(df$target)
+```
+
+
+```{r Normaliztion, echo=TRUE}
+#Normalization function
+normalize <- function(x){
+  return ((x - min(x))/(max(x) - min(x)))
+}
+norm_df <- as.data.frame(lapply(df[,1:13], normalize))
+head(norm_df,5)
+```
+
+
+```{r Combine and Train_test_split, echo=TRUE}
+#Combine the normalized dataframe with the target variable
+norm_df <- cbind(norm_df, df$target)
+colnames(norm_df)[colnames(norm_df)=="df$target"] <- "target"
+head(norm_df,5)
+
+#Split into Train and Test Datasets
+library(caTools)
+set.seed(1234)
+
+sample = sample.split(norm_df, SplitRatio = 0.75)
+train_df = subset(norm_df, sample==TRUE)
+test_df = subset(norm_df,sample==FALSE)
+```
+
+
