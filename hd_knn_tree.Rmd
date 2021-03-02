@@ -2,7 +2,7 @@
 title: "hd_knn_tree"
 author: "Dany Park"
 date: "01/03/2021"
-output: html_document
+output: rmarkdown::github_document
 ---
 # K-Nearest Neighbor and Decision Tree
 This project is to apply K-Nearest Neighbor and Decision Tree to the heart disease dataset and apply fitted model to predict the potential patient. Also, the models are compared with the Logistic Regression for their accuracy and predictability.
