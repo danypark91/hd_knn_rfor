@@ -38,7 +38,7 @@ knn_15 <- knn(train=train_df[1:13], test=test_df[1:13], cl=train_df$target, k=15
 
 #Predictability of the above model
 table(knn_15, test_df$target)
-mean(knn_15 != test_df$target) #knn error rate
+print(paste("Error: ", round(mean(knn_15 != test_df$target),4))) #knn error rate
 
 #Error vs number of neighbors
 knn_err <- list() #empty list
