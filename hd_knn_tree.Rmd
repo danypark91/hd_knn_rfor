@@ -58,7 +58,9 @@ test_df = subset(norm_df,sample==FALSE)
 ```
 
 ### 1-3. Selection of K
-As the algorithm is based on the distance based on the value of K, it is extremely important to choose appropriate value. In order to choose the right K, `knn` should be performed multiple times and choose the K that has the least errors. 
+As the algorithm is based on the distance based on the value of K, it is extremely important to choose appropriate value. The below image illustrates the difference betwen k=3 and k=5. The result of the choice between those values could significantly differ from one another. In order to choose the right K, `knn` should be performed multiple times and choose the K that has the least errors. 
+
+![Difference](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/KnnClassification.svg/330px-KnnClassification.svg.png)
 
 There are couple of points to consider:
 * K is a positive integer
@@ -78,7 +80,7 @@ table(knn_15, test_df$target)
 print(paste("Error: ", round(mean(knn_15 != test_df$target),4))) #knn error rate
 ```
 
-To minimize the effort, the list of error based on the value of k was created. For-loop command helped to populate the list of error of each model sequentially. 
+To minimize the effort, the list of error based on the value of k was created. For-loop command helped to populate the sequential list of error for K between 1 to 15. The graph represents the list, `knn-err`, and the value of K. As the trend suggests, error rate decreases significantly after k=4 and bounces back at 10. 8, 9 and 10 are the most accurate models for the dataframe. However, as the tiebreaking rule suggests, 9 is chosen to proceed further steps for the analysis.
 
 ```{r For Loop KNN from 1 to 15, echo=TRUE}
 #Error vs number of neighbors
@@ -95,7 +97,7 @@ x <- seq(1, 15, by=1)
 knn_errplot <- plot(x, knn_err, type="b", axes=TRUE,
                     xlab="K", ylab="Error Rate", main="K vs Error of KNN", col="Red")
 ```
-
+The exact rate of error of the K=9 model is 0.1744 which lower than the k=15 model. Of course the accuracy of the model compare to the `test_df` reponse variable is 0.8256. 
 ```{r K=9, echo=TRUE}
 #K=9, Fit KNN
 df_knn_model <- knn(train=train_df[1:13], test=test_df[1:13], cl=train_df$target, k=9)
@@ -107,6 +109,7 @@ print(paste("Error of the Model : ", round(df_knn_model_err,4)))
 ```
 
 ### 1-4. Prediction and Performance Measure
+As we dicovered the best-fit model of `KNN`, we should examine the predictability of the model. 
 
 ```{r Confusion Matrix, echo=TRUE}
 #Confusion Matrix of the KNN
