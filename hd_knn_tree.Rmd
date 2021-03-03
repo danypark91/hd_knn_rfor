@@ -20,7 +20,7 @@ For example, assume that the K is chosen to be 3. Within the distanced boundary,
 
 
 ### 1-2. Importation and Alteration of Data
-Before proceeding straight into the algorithm, I imported the project's dataframe. Like the previous logistic regression project, the erronous attribute was corrected. However this time, the `knn` function required the response variable as the factor(categorical variable).
+Before proceeding straight into the algorithm, I imported the project's dataframe. Like the previous logistic regression project, the erronous attribute name was corrected. However this time, the `knn` function required the only  response variable as a factor(categorical variable).
 
 ```{r Data Importation, echo=TRUE}
 #Import Dataset from the local device
@@ -32,13 +32,14 @@ colnames(df)[colnames(df)=='ï..age'] <- 'age'
 #Check the type and convert the dependent variable into factors
 df$target <- as.factor(df$target)
 ```
-Also, the normalization of all dependent variable was conducted prior to the analysis.
+Also, prior to the analysis, normalization of dependent variable was conducted to equalize the weight and range. The `normalize` function helped to acquire the condition. The normalized dataset was divided into two sets: `train_df` was used to apply and train the `knn` alogorithm and the measure of predictability utlized the `test_df`.
 
 ```{r Normaliztion, echo=TRUE}
 #Normalization function
 normalize <- function(x){
   return ((x - min(x))/(max(x) - min(x)))
 }
+
 norm_df <- as.data.frame(lapply(df[,1:13], normalize))
 head(norm_df,5)
 
@@ -57,6 +58,15 @@ test_df = subset(norm_df,sample==FALSE)
 ```
 
 ### 1-3. Selection of K
+As the algorithm is based on the distance based on the value of K, it is extremely important to choose appropriate value. In order to choose the right K, `knn` should be performed multiple times and choose the K that has the least errors. 
+
+There are couple of points to consider:
+* K is a positive integer
+* K -> 1, less stable prediction
+* As K increases, prediction becomes more stable. However, if the error increases, then rerun of `knn` could stop
+* If tiebreaking within the range of K, then choose odd number
+
+The below run is the sample run of KNN with K=15. The rate of error of prediction on the `test_df` is as low as 0.2209. The result can be considered as an accurate model. However, as stated above, `knn` should be performed multiple times with different K values to determine the best-fit model.
 
 ```{r Sample KNN run, echo=TRUE}
 #K-Nearest Neighbor sample run, k=15
@@ -65,8 +75,10 @@ knn_15 <- knn(train=train_df[1:13], test=test_df[1:13], cl=train_df$target, k=15
 
 #Predictability of the above model
 table(knn_15, test_df$target)
-mean(knn_15 != test_df$target) #knn error rate
+print(paste("Error: ", round(mean(knn_15 != test_df$target),4))) #knn error rate
 ```
+
+To minimize the effort, the list of error based on the value of k was created. For-loop command helped to populate the list of error of each model sequentially. 
 
 ```{r For Loop KNN from 1 to 15, echo=TRUE}
 #Error vs number of neighbors
