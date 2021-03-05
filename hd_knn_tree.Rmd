@@ -115,6 +115,7 @@ As we dicovered the best-fit model of `KNN`, we should examine the model's predi
 ![Confusion Matrix](https://2.bp.blogspot.com/-EvSXDotTOwc/XMfeOGZ-CVI/AAAAAAAAEiE/oePFfvhfOQM11dgRn9FkPxlegCXbgOF4QCLcBGAs/s1600/confusionMatrxiUpdated.jpg)
 
 The confusion matrix states that the accuracy of the 9-nearest neighbor for the dataframe is 0.8256 with the 95% confidence interval of 0.7287 and 0.8990. The prediction result of the model is very promising in terms of the predictability.
+
 The sensitivity is 0.8511, which means that out of 48 patients who suffered the heart disease, 40 patients were correctly diagnosed. The specificity score is 0.7949. Among the 39 patients who did not carry the heart disease, 31 patients were successfully categorized.  The error of the model is 0.1744: 8 patients are categorized as Type I error where as 7 patients suffered Type II error. As the dataframe is related to health issues, Type II error could cause a devastating result. 
 
 ```{r KNN Confusion Matrix, echo=FALSE}
@@ -128,6 +129,7 @@ df_knn_conf
 ![ROC Curve](https://ars.els-cdn.com/content/image/3-s2.0-B9780128030141000029-f02-01-9780128030141.jpg)
 
 Another way to measure the predictability of the model is by deriving the ROC curve and AUC score. It is an excellent tool to graphically repsent the predictability of a binary classification. A ROC plots True Positive Rate vs False Positive Rate at different classification thresholds. Lower the classification threshold will result more items as positive. More the curve close to the blue line, more the accurate prediction is. The ROC curve below shows that it is close to the maximum plot that a ROC could be. 
+
 Although ROC visualize the performance of the predicted model, it is very diffcult to quantify. AUC provides an aggregate measure of performance for all possible classification threshold. It measures the quality of the model's prediction irrespecitible to the chosen classification thresold. For KNN, AUC score is 0.9026 hiwhc is very close to 1.00. It is an evidence that the model's prediciton is statistically signifcant.
 
 ```{r KNN ROC and AUC, echo=FALSE, fig.height=5, fig.width=6}
