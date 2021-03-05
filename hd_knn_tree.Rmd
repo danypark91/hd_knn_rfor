@@ -127,6 +127,8 @@ df_knn_conf
 ![ROC Curve](https://ars.els-cdn.com/content/image/3-s2.0-B9780128030141000029-f02-01-9780128030141.jpg)
 
 Another way to measure the predictability of the model is by deriving the ROC curve and AUC score. It is an excellent tool to graphically repsent the predictability of a binary classification. A ROC plots True Positive Rate vs False Positive Rate at different classification thresholds. Lower the classification threshold will result more items as positive. More the curve close to the blue line, more the accurate prediction is. The ROC curve below shows that it is close to the maximum plot that a ROC could be. 
+Although ROC visualize the performance of the predicted model, it is very diffcult to quantify. AUC provides an aggregate measure of performance for all possible classification threshold. It measures the quality of the model's prediction irrespecitible to the chosen classification thresold. For KNN, AUC score is 0.9026 hiwhc is very close to 1.00. It is an evidence that the model's prediciton is statistically signifcant.
+
 ```{r ROC and AUC, echo=FALSE, fig.height=6, fig.width=6}
 library(kknn)
 df_knn_model.alt <- train.kknn(as.factor(target)~., train_df, ks=9,  method="knn", scale=TRUE)
