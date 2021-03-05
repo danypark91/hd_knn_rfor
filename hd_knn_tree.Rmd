@@ -126,7 +126,7 @@ df_knn_conf
 
 ![ROC Curve](https://ars.els-cdn.com/content/image/3-s2.0-B9780128030141000029-f02-01-9780128030141.jpg)
 
-Another way to measure the predictability of the model is by deriving the ROC curve and AUC score. It is an excellent tool to graphically repsent the predictability of a binary classification. 
+Another way to measure the predictability of the model is by deriving the ROC curve and AUC score. It is an excellent tool to graphically repsent the predictability of a binary classification. A ROC plots True Positive Rate vs False Positive Rate at different classification thresholds. Lower the classification threshold will result more items as positive. More the curve close to the blue line, more the accurate prediction is. The ROC curve below shows that it is close to the maximum plot that a ROC could be. 
 ```{r ROC and AUC, echo=FALSE, fig.height=6, fig.width=6}
 library(kknn)
 df_knn_model.alt <- train.kknn(as.factor(target)~., train_df, ks=9,  method="knn", scale=TRUE)
@@ -149,4 +149,182 @@ df_knn_auc <- df_knn_auc@y.values[[1]]
 df_knn_auc
 ```
 
+## 2. Decision Tree
 
+```{r Prepare the Dataframe, echo=FALSE}
+#Convert categorical variable from int to factor
+df <- read.csv("Heart.csv", header = TRUE)
+colnames(df)[colnames(df)=='ï..age'] <- 'age'
+
+df$sex <- as.factor(df$sex)
+df$cp <- as.factor(df$cp)
+df$fbs <- as.factor(df$fbs)
+df$restecg <- as.factor(df$restecg)
+df$exang <- as.factor(df$exang)
+df$slope <- as.factor(df$slope)
+df$thal <- as.factor(df$thal)
+
+str(df)
+
+#Split into Train and Test Datasets
+library(caTools)
+set.seed(1234)
+
+sample_dt = sample.split(df, SplitRatio = 0.75)
+train_dt_df = subset(df, sample_dt==TRUE)
+test_dt_df = subset(df,sample_dt==FALSE)
+```
+
+```{r Fitting the model, echo=FALSE}
+#Decision Tree for the train model
+library(rpart)
+
+df_dt_model <- rpart(as.factor(target)~., data=train_dt_df, method = "class") #response variable = factor
+printcp(df_dt_model) # display the results
+plotcp(df_dt_model) # visualize cross-validation results
+
+```
+
+
+```{r Prune, echo=FALSE}
+#Prune the tree based on the result
+df_dt_prune <- prune(df_dt_model, cp=df_dt_model$cptable[which.min(df_dt_model$cptable[,"xerror"]),"CP"])
+df_dt_prune
+```
+
+
+```{r Confusion Matrix, echo=FALSE}
+#ConfusionMatrix
+df_dt_model_fit <- predict(df_dt_prune, newdata=test_dt_df, type="prob")[,2]
+df_dt_model_conf <- ifelse(df_dt_model_fit>0.5,1,0)
+
+df_dt_conf <- confusionMatrix(as.factor(df_dt_model_conf), as.factor(test_dt_df$target), positive=as.character(1))
+df_dt_conf
+```
+
+
+```{r ROC and AUC, echo=TRUE}
+#ROC Curve and AUC Score
+df_dt_prediction <- prediction(df_dt_model_fit, as.factor(test_dt_df$target))
+df_dt_performance <- performance(df_dt_prediction, measure = "tpr", x.measure = "fpr")
+df_dt_roc <- plot(df_dt_performance, col="Red",
+                  main="ROC Curve - Decision Tree",
+                  xlab="False Positive Rate",
+                  ylab="True Positive Rate")+
+  abline(a=0, b=1, col="Grey", lty=2)+
+  abline(v=0, h=1, col="Blue", lty=3)+
+  plot(df_dt_performance, col="Red",add=TRUE)
+
+df_dt_auc <- performance(df_dt_prediction, measure="auc")
+df_dt_auc <- df_dt_auc@y.values[[1]]
+df_dt_auc
+
+```
+
+## 3. Comparison with other Model
+
+```{r Logistic Regression, echo=FALSE}
+#Logistic Regression Model
+library(MASS)
+df_model.part <- glm(target~sex+cp+trestbps+thalach+oldpeak+ca, data=train_dt_df, family=binomial(link="logit"))
+df_model_fit <- predict(df_model.part, newdata=test_dt_df, type="response")
+df_model_confmat <- ifelse(df_model_fit >0.5, 1, 0)
+
+df_log_conf <- confusionMatrix(factor(df_model_confmat), factor(test_dt_df$target), positive=as.character(1))
+df_log_conf
+
+df_prediction <- prediction(df_model_fit, test_dt_df$target)
+df_performance <- performance(df_prediction, measure = "tpr", x.measure="fpr")
+
+plot(df_performance, col = "Red", 
+     main = "ROC Curve - Logistic Regression",
+     xlab="False Postiive Rate", ylab="True Positive Rate")+
+  abline(a=0, b=1, col= "Grey", lty=2)+
+  abline(v=0, h=1, col= "Blue", lty=3)+
+  plot(df_performance, col = "Red", 
+       main = "ROC Curve - Logistic Regression",
+       xlab="False Postiive Rate", ylab="True Positive Rate",add=TRUE)
+
+df_auc <- performance(df_prediction, measure = "auc")
+df_auc <- df_auc@y.values[[1]]
+print(paste("AUC Score: ", lapply(df_auc,round,4)))
+```
+
+
+```{r Summary Dataframe, echo=FALSE}
+#Model Fit summary dataframe
+df_ci <- data.frame(type=c("Logistic Regression", "9-Nearest Neighbor", "Decision Tree"), 
+                    acc=c(df_log_conf$overall[1], df_knn_conf$overall[1], df_dt_conf$overall[1]),
+                    lowci=c(df_log_conf$overall[3], df_knn_conf$overall[3], df_dt_conf$overall[3]),
+                    upci=c(df_log_conf$overall[4], df_knn_conf$overall[4], df_dt_conf$overall[4]),
+                    sens=c(df_log_conf$byClass[1], df_knn_conf$byClass[1], df_dt_conf$byClass[1]),
+                    spec=c(df_log_conf$byClass[2], df_knn_conf$byClass[2], df_dt_conf$byClass[2]),
+                    f1=c(df_log_conf$byClass[7], df_knn_conf$byClass[7], df_dt_conf$byClass[7]),
+                    auc =c(df_auc, df_knn_auc, df_dt_auc))
+head(df_ci,3)
+```
+
+```{r Accuracy Comparison, echo=FALSE}
+#Accuracy Comparison with 95% Confidence Interval
+library(tidyverse)
+library(ggsci)
+ggplot(data=df_ci, aes(type,acc))+
+  labs(title="Comparison of Classification", subtitle="Accuracy and Confidence Interval", x="Classification", y="Accuracy")+
+  geom_point(size=5, aes(color=type))+
+  geom_errorbar(aes(ymax=upci, ymin=lowci),width=0.2)+
+  theme_bw()+
+  scale_fill_npg()
+
+```
+
+
+```{r F1, echo=FALSE}
+#F1 Score
+ggplot(data=df_ci, aes(type, f1))+
+  geom_point(size=5, aes(color=type))+
+  geom_text(aes(label=round(f1,4), hjust=-0.3, vjust=0))+
+  labs(title="Comparison of Classification", subtitle="F1 Score", x="Classification Method", y="F1 Score")+
+  theme_bw()+
+  scale_fill_tron()
+```
+
+```{r Sensitivity, echo=FALSE}
+#Sensitivity
+ggplot(data=df_ci, aes(type, sens))+
+  geom_point(size=5, aes(color=type))+
+  geom_text(aes(label=round(sens,4), hjust=-0.3, vjust=0))+
+  labs(title="Comparison of Classification", subtitle="Sensitivity", x="Classification Method", y="Sensitivity")+
+  theme_bw()+
+  scale_fill_npg()
+```
+
+```{r Specificity, echo=FALSE}
+#Specificty
+ggplot(data=df_ci, aes(type, spec))+
+  geom_point(size=5, aes(color=type))+
+  geom_text(aes(label=round(spec,4), hjust=-0.3, vjust=0))+
+  labs(title="Comparison of Classification", subtitle="Specificity", x="Classification Method", y="Specificity")+
+  theme_bw()+
+  scale_fill_npg()
+```
+
+```{r ROC Comparison, echo=FALSE, fig.height=5, fig.width=6}
+#ROC Comparison
+plot(df_performance, main="ROC Curve: Comparison", col="Red")+
+  abline(a=0, b=1, col= "Grey", lty=2)+
+  abline(v=0, h=1, col= "Blue", lty=3)
+par(new=TRUE)
+plot(df_knn_performance, col="Orange")
+par(new=TRUE)
+plot(df_dt_performance, col="Dark Red")
+```
+
+```{r AUC Score, echo=FALSE}
+#Specificty
+ggplot(data=df_ci, aes(type, auc))+
+  geom_point(size=5, aes(color=type))+
+  geom_text(aes(label=round(auc,4), hjust=-0.3, vjust=0))+
+  labs(title="Comparison of Classification", subtitle="Area Under Curve", x="Classification Method", y="AUC")+
+  theme_bw()+
+  scale_fill_npg()
+```
