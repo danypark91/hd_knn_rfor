@@ -181,7 +181,7 @@ library(rpart)
 
 df_dt_model <- rpart(as.factor(target)~., data=train_dt_df, method = "class") #response variable = factor
 printcp(df_dt_model) # display the results
-plotcp(df_dt_model) # visualize cross-validation results
+plotcp(df_dt_model,col="Red") # visualize cross-validation results
 
 ```
 
