@@ -158,26 +158,26 @@ df_knn_auc
 
 ```{r Prepare the Dataframe, echo=FALSE}
 #Convert categorical variable from int to factor
-df2 <- read.csv("Heart.csv", header = TRUE)
-colnames(df2)[colnames(df2)=='ï..age'] <- 'age'
+df <- read.csv("Heart.csv", header = TRUE)
+colnames(df)[colnames(df)=='ï..age'] <- 'age'
 
-df2$sex <- as.factor(df2$sex)
-df2$cp <- as.factor(df2$cp)
-df2$fbs <- as.factor(df2$fbs)
-df2$restecg <- as.factor(df2$restecg)
-df2$exang <- as.factor(df2$exang)
-df2$slope <- as.factor(df2$slope)
-df2$thal <- as.factor(df2$thal)
+df$sex <- as.factor(df$sex)
+df$cp <- as.factor(df$cp)
+df$fbs <- as.factor(df$fbs)
+df$restecg <- as.factor(df$restecg)
+df$exang <- as.factor(df$exang)
+df$slope <- as.factor(df$slope)
+df$thal <- as.factor(df$thal)
 
-str(df2)
+str(df)
 
 #Split into Train and Test Datasets
 library(caTools)
 set.seed(1234)
 
-sample_dt = sample.split(df2, SplitRatio = 0.75)
-train_dt_df = subset(df2, sample_dt==TRUE)
-test_dt_df = subset(df2,sample_dt==FALSE)
+sample_dt = sample.split(df, SplitRatio = 0.75)
+train_dt_df = subset(df, sample_dt==TRUE)
+test_dt_df = subset(df,sample_dt==FALSE)
 ```
 
 ```{r Fitting the model, echo=FALSE}
