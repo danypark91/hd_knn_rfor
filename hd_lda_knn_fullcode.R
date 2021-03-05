@@ -173,7 +173,8 @@ df_ci <- data.frame(type=c("Logistic Regression", "9-Nearest Neighbor", "Decisio
                     upci=c(df_log_conf$overall[4], df_knn_conf$overall[4], df_dt_conf$overall[4]),
                     sens=c(df_log_conf$byClass[1], df_knn_conf$byClass[1], df_dt_conf$byClass[1]),
                     spec=c(df_log_conf$byClass[2], df_knn_conf$byClass[2], df_dt_conf$byClass[2]),
-                    f1=c(df_log_conf$byClass[7], df_knn_conf$byClass[7], df_dt_conf$byClass[7]))
+                    f1=c(df_log_conf$byClass[7], df_knn_conf$byClass[7], df_dt_conf$byClass[7]),
+                    auc=c(df_auc, df_knn_auc, df_dt_auc))
 
 #Accuracy Comparison with 95% Confidence Interval
 library(tidyverse)
@@ -197,7 +198,7 @@ ggplot(data=df_ci, aes(type, f1))+
 ggplot(data=df_ci, aes(type, sens))+
   geom_point(size=5, aes(color=type))+
   geom_text(aes(label=round(sens,4), hjust=-0.3, vjust=0))+
-  labs(title="Comparison of Classification", subtitle="Sensitivity", x="Classification Method", y="F1 Score")+
+  labs(title="Comparison of Classification", subtitle="Sensitivity", x="Classification Method", y="Sensitivity")+
   theme_bw()+
   scale_fill_npg()
 
@@ -205,7 +206,7 @@ ggplot(data=df_ci, aes(type, sens))+
 ggplot(data=df_ci, aes(type, spec))+
   geom_point(size=5, aes(color=type))+
   geom_text(aes(label=round(spec,4), hjust=-0.3, vjust=0))+
-  labs(title="Comparison of Classification", subtitle="Specifity", x="Classification Method", y="F1 Score")+
+  labs(title="Comparison of Classification", subtitle="Specifity", x="Classification Method", y="Specificity")+
   theme_bw()+
   scale_fill_npg()
 
@@ -217,3 +218,11 @@ par(new=TRUE)
 plot(df_knn_performance, col="Orange")
 par(new=TRUE)
 plot(df_dt_performance, col="Dark Red")
+
+#AUC
+ggplot(data=df_ci, aes(type, auc))+
+  geom_point(size=5, aes(color=type))+
+  geom_text(aes(label=round(auc,4), hjust=-0.3, vjust=0))+
+  labs(title="Comparison of Classification", subtitle="Area Under Curve", x="Classification Method", y="AUC")+
+  theme_bw()+
+  scale_fill_npg()
