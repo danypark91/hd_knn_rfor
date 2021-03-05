@@ -208,7 +208,7 @@ df_dt_conf
 ```
 
 
-```{r DT ROC and AUC, echo=TRUE}
+```{r DT ROC and AUC, echo=TRUE, fig.height=5, fig.width=6}
 #ROC Curve and AUC Score
 df_dt_prediction <- prediction(df_dt_model_fit, as.factor(test_dt_df$target))
 df_dt_performance <- performance(df_dt_prediction, measure = "tpr", x.measure = "fpr")
