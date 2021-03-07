@@ -155,6 +155,10 @@ df_knn_auc
 ```
 
 ## 2. Decision Tree
+Decision Tree is a tree structured regression model or classification method. It consists a root node which initiate the process and a leaf node which is the final result. The core process that builds the tree is called Binary Recursive Partitioning. It recursively splits the data into partitions (sub-populations). The process terminates after a particular stopping attribute is reached.
+
+![Tree Example](https://www.researchgate.net/profile/Richard-Berk-2/publication/255584665/figure/fig1/AS:670716638789635@1536922716680/Recursive-Partitioning-Logic-in-Classification-and-Regression-Trees-CART.png)
+
 
 ```{r Prepare the Dataframe, echo=FALSE}
 #Convert categorical variable from int to factor
