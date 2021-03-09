@@ -116,7 +116,7 @@ As we dicovered the best-fit model of `KNN`, we should examine the model's predi
 
 The confusion matrix states that the accuracy of the 9-nearest neighbor for the dataframe is 0.8256 with the 95% confidence interval of 0.7287 and 0.8990. The prediction result of the model is very promising in terms of the predictability.
 
-The sensitivity is 0.8511, which means that out of 48 patients who suffered the heart disease, 40 patients were correctly diagnosed. The specificity score is 0.7949. Among the 39 patients who did not carry the heart disease, 31 patients were successfully categorized.  The error of the model is 0.1744: 8 patients are categorized as Type I error where as 7 patients suffered Type II error. As the dataframe is related to health issues, Type II error could cause a devastating result. 
+The sensitivity is 0.8511, which means that out of 48 patients who suffered the heart disease, 40 patients were correctly diagnosed. The specificity score is 0.7949. Among the 39 patients who did not carry the heart disease, 31 patients were successfully categorized. The error of the model is 0.1744: 8 patients are categorized as Type I error where as 7 patients suffered Type II error. As the dataframe is related to health issues, Type II error could cause a devastating result. 
 
 ```{r KNN Confusion Matrix, echo=FALSE}
 #Confusion Matrix of the KNN
@@ -130,7 +130,7 @@ df_knn_conf
 
 Another way to measure the predictability of the model is by deriving the ROC curve and AUC score. It is an excellent tool to graphically repsent the predictability of a binary classification. A ROC plots True Positive Rate vs False Positive Rate at different classification thresholds. Lower the classification threshold will result more items as positive. More the curve close to the blue line, more the accurate prediction is. The ROC curve below shows that it is close to the maximum plot that a ROC could be. 
 
-Although ROC visualize the performance of the predicted model, it is very diffcult to quantify. AUC provides an aggregate measure of performance for all possible classification threshold. It measures the quality of the model's prediction irrespecitible to the chosen classification thresold. For KNN, AUC score is 0.9026 hiwhc is very close to 1.00. It is an evidence that the model's prediciton is statistically signifcant.
+Although ROC visualize the performance of the predicted model, it is very diffcult to quantify. AUC provides an aggregate measure of performance for all possible classification threshold. It measures the quality of the model's prediction irrespecitible to the chosen classification thresold. For KNN, AUC score is 0.9026 which is very close to 1.00. It is an evidence that the model's prediciton is statistically signifcant.
 
 ```{r KNN ROC and AUC, echo=FALSE, fig.height=5, fig.width=6}
 library(kknn)
@@ -186,6 +186,7 @@ test_dt_df = subset(df,sample_dt==FALSE)
 
 ### 2-1. Decision Tree Fitting
 The Decision tree algorithm is applied to `train_dt_df`. Unlike the regression method of Decision Tree, Residual Sum of Squares(RSS) cannot be computed. Instead, either the Gini Index or the cross-entropy are typically used to evaludate the quality of the split. However, classfication error rate should be preferred when we assess the predictability of the model.
+
 The * mark indicates the terminal nodes of  the model. Espically the table printed at the bottom shows the statistical result of the model. The table starts from the smallest tree (no splits) to the largest (23 splits). To easily identify the best split, we should focus on `xerror` column of the CP table. However, please keep in mind that the error has been scaled to the first node with an error of 1. The graph clearly indicates that the best decision tree has 13 splits (12 terminal nodes).
 ```{r Fitting the model, echo=FALSE}
 #Decision Tree for the train model
@@ -210,15 +211,17 @@ Interpreting the left most model:
 * The final probability that the patient having the heart disease is 0.04
 
 
-```{r Prune, echo=FALSE}
+```{r Prune, echo=FALSE,message=FALSE}
 library(rpart.plot)
 #Prune the tree based on the result
 df_dt_prune <- prune(df_dt_model, cp=0.0101010)
                        #df_dt_model$cptable[which.min(df_dt_model$cptable[,"xerror"]),"CP"])
-prune_tree <- rpart.plot(df_dt_prune)
-prune_tree
+rpart.plot(df_dt_prune)
 ```
+
 ### 2-3. Prediction and Performance Measure
+Similar to the Logistic Regression and the K-nearest neighbor, confusion matrix and ROC curve are used to measure the predictability of the model. 
+The overall accuracy of the model is 0.7674 with the 95% confidence interval of 0.6639 and 0.8518. The algorithm correctly predicted 66 patients out of 86 patients. out of 39 patients who did not carry the heart disease, 11 patients were falsely diagnosed (Type I error): carrying heart disease. Similary, `test_dt_df` categorized 47 heart disease patients, 9 patients were predicted not suffering heart disease (Type II error). 
 
 ```{r DT Confusion Matrix, echo=FALSE}
 #ConfusionMatrix
@@ -229,7 +232,7 @@ df_dt_conf <- confusionMatrix(as.factor(df_dt_model_conf), as.factor(test_dt_df$
 df_dt_conf
 ```
 
-
+The ROC curve is above the grey line. It indicates that the prediction at any given point is correctly classifying the result. The quantifying measure of the curve is 0.7608 which can be considered as moderately accurate model.
 ```{r DT ROC and AUC, echo=TRUE, fig.height=5, fig.width=6}
 #ROC Curve and AUC Score
 df_dt_prediction <- prediction(df_dt_model_fit, as.factor(test_dt_df$target))
@@ -250,7 +253,7 @@ df_dt_auc
 
 ## 3. Comparison with other Model
 
-```{r Logistic Regression, echo=FALSE}
+```{r Logistic Regression, echo=FALSE, fig.height=5, fig.width=6}
 #Logistic Regression Model
 library(MASS)
 df_model.part <- glm(target~sex+cp+trestbps+thalach+oldpeak+ca, data=train_dt_df, family=binomial(link="logit"))
