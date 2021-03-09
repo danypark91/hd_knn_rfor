@@ -159,7 +159,7 @@ Decision Tree is a tree structured regression model or classification method. It
 
 ![Tree Example](https://www.researchgate.net/profile/Richard-Berk-2/publication/255584665/figure/fig1/AS:670716638789635@1536922716680/Recursive-Partitioning-Logic-in-Classification-and-Regression-Trees-CART.png)
 
-
+The first step is to import the data and cleanse it like the previous classification methods. However, unlike the K-nearest neighbor, categorical variables should be converted into the type factor. After the dataframe's attributes get corrected, as usual, I splitted the data into the train and the test sets.
 ```{r Prepare the Dataframe, echo=FALSE}
 #Convert categorical variable from int to factor
 df <- read.csv("Heart.csv", header = TRUE)
@@ -184,23 +184,39 @@ train_dt_df = subset(df, sample_dt==TRUE)
 test_dt_df = subset(df,sample_dt==FALSE)
 ```
 
+### 2-1. Decision Tree Fitting
+The Decision tree algorithm is applied to `train_dt_df`. Unlike the regression method of Decision Tree, Residual Sum of Squares(RSS) cannot be computed. Instead, either the Gini Index or the cross-entropy are typically used to evaludate the quality of the split. However, classfication error rate should be preferred when we assess the predictability of the model.
+The * mark indicates the terminal nodes of  the model. Espically the table printed at the bottom shows the statistical result of the model. The table starts from the smallest tree (no splits) to the largest (23 splits). To easily identify the best split, we should focus on `xerror` column of the CP table. However, please keep in mind that the error has been scaled to the first node with an error of 1. The graph clearly indicates that the best decision tree has 13 splits (12 terminal nodes).
 ```{r Fitting the model, echo=FALSE}
 #Decision Tree for the train model
 library(rpart)
 
-df_dt_model <- rpart(as.factor(target)~., data=train_dt_df, method = "class") #response variable = factor
+df_dt_model <- rpart(as.factor(target)~., data=train_dt_df, method = "class", 
+                     control=rpart.control(xval=10, minbucket=2,cp=0)) #response variable = factor
+df_dt_model
 printcp(df_dt_model) # display the results
 plotcp(df_dt_model,col="Red") # visualize cross-validation results
 
 ```
 
+### 2-2. Prune
+The subtree of 13 splits has been applied to the pruning process based on the optimal CP value. The visualization of the pruned decision tree helps us to easily understand the model.
+
+Interpreting the left most model:
+* The root node starts with the ratio of patients suffering heart disease. 54% of the patients suffered the disease
+* The next node asks the patient's `thal`: inherited blood disorder. If the patient condition is either excess(0), normal(1) or reversable defect(3), then go down to the left child node. 45% who had listed condition suffered heart disease at the rate of 27%.
+* The next node asks the patient's `ca`: number of major vessels. If the patient has or has more than 1 vessel, proceeds further to the left child node. 
+* The final probability that the patient having the heart disease is 0.04
+
 
 ```{r Prune, echo=FALSE}
+library(rpart.plot)
 #Prune the tree based on the result
 df_dt_prune <- prune(df_dt_model, cp=df_dt_model$cptable[which.min(df_dt_model$cptable[,"xerror"]),"CP"])
-df_dt_prune
+prune_tree <- rpart.plot(df_dt_prune)
+prune_tree
 ```
-
+### 2-3. Prediction and Performance Measure
 
 ```{r DT Confusion Matrix, echo=FALSE}
 #ConfusionMatrix
@@ -329,7 +345,7 @@ plot(df_dt_performance, col="Dark Red")
 ```
 
 ```{r AUC Score, echo=FALSE}
-#Specificty
+#AUC
 ggplot(data=df_ci, aes(type, auc))+
   geom_point(size=5, aes(color=type))+
   geom_text(aes(label=round(auc,4), hjust=-0.3, vjust=0))+
