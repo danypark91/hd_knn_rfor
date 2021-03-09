@@ -203,6 +203,7 @@ plotcp(df_dt_model,col="Red") # visualize cross-validation results
 The subtree of 13 splits has been applied to the pruning process based on the optimal CP value. The visualization of the pruned decision tree helps us to easily understand the model.
 
 Interpreting the left most model:
+
 * The root node starts with the ratio of patients suffering heart disease. 54% of the patients suffered the disease
 * The next node asks the patient's `thal`: inherited blood disorder. If the patient condition is either excess(0), normal(1) or reversable defect(3), then go down to the left child node. 45% who had listed condition suffered heart disease at the rate of 27%.
 * The next node asks the patient's `ca`: number of major vessels. If the patient has or has more than 1 vessel, proceeds further to the left child node. 
@@ -212,7 +213,8 @@ Interpreting the left most model:
 ```{r Prune, echo=FALSE}
 library(rpart.plot)
 #Prune the tree based on the result
-df_dt_prune <- prune(df_dt_model, cp=df_dt_model$cptable[which.min(df_dt_model$cptable[,"xerror"]),"CP"])
+df_dt_prune <- prune(df_dt_model, cp=0.0101010)
+                       #df_dt_model$cptable[which.min(df_dt_model$cptable[,"xerror"]),"CP"])
 prune_tree <- rpart.plot(df_dt_prune)
 prune_tree
 ```
