@@ -111,7 +111,7 @@ test_dt_df = subset(df,sample_dt==FALSE)
 #Decision Tree for the train model
 library(rpart)
 
-df_dt_model <- rpart(as.factor(target)~., data=train_dt_df, method = "class", control=rpart.control(xval=10, minbucket=1, cp=0))
+df_dt_model <- rpart(as.factor(target)~., data=train_dt_df, method = "class", control=rpart.control(xval=10, minbucket=2, cp=0))
 printcp(df_dt_model) # display the results
 plotcp(df_dt_model) # visualize cross-validation results
 
