@@ -221,7 +221,7 @@ rpart.plot(df_dt_prune)
 
 ### 2-3. Prediction and Performance Measure
 Similar to the Logistic Regression and the K-nearest neighbor, confusion matrix and ROC curve are used to measure the predictability of the model. 
-The overall accuracy of the model is 0.7674 with the 95% confidence interval of 0.6639 and 0.8518. The algorithm correctly predicted 66 patients out of 86 patients. out of 39 patients who did not carry the heart disease, 11 patients were falsely diagnosed (Type I error): carrying heart disease. Similary, `test_dt_df` categorized 47 heart disease patients, 9 patients were predicted not suffering heart disease (Type II error). 
+The overall accuracy of the model is 0.7558 with the 95% confidence interval of 0.6513 and 0.8420. The algorithm correctly predicted 65 patients out of 86 patients. out of 39 patients who did not carry the heart disease, 10 patients were falsely diagnosed (Type I error): carrying heart disease. Similary, `test_dt_df` categorized 47 heart disease patients, 11 patients were predicted not suffering heart disease (Type II error). 
 
 ```{r DT Confusion Matrix, echo=FALSE}
 #ConfusionMatrix
@@ -232,8 +232,8 @@ df_dt_conf <- confusionMatrix(as.factor(df_dt_model_conf), as.factor(test_dt_df$
 df_dt_conf
 ```
 
-The ROC curve is above the grey line. It indicates that the prediction at any given point is correctly classifying the result. The quantifying measure of the curve is 0.7608 which can be considered as moderately accurate model.
-```{r DT ROC and AUC, echo=TRUE, fig.height=5, fig.width=6}
+The ROC curve is above the grey line. It indicates that the prediction at any given point is correctly classifying the result. The quantifying measure of the curve is 0.7559 which can be considered as moderately accurate model.
+```{r DT ROC and AUC, echo=FALSE, fig.height=5, fig.width=6}
 #ROC Curve and AUC Score
 df_dt_prediction <- prediction(df_dt_model_fit, as.factor(test_dt_df$target))
 df_dt_performance <- performance(df_dt_prediction, measure = "tpr", x.measure = "fpr")
