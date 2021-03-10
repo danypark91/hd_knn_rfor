@@ -301,7 +301,6 @@ head(df_ci,3)
 
 ### 3-3. Graphical Presentation
 
-
 ```{r Accuracy Comparison, echo=FALSE}
 #Accuracy Comparison with 95% Confidence Interval
 library(tidyverse)
