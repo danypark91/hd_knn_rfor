@@ -417,6 +417,34 @@ accurate model.
 
 ## 3. Comparison with other Model
 
+The Previous chapters and other project applied various classification
+algorithms. All those algorithms have advantages over one another. For
+the Heart Disease dataframe, Logistic regression, K-nearest neighbor and
+the Decision Tree are chosen. Each classification has advantages to one
+another. This chapter will compare the result of those methods and
+distinguish which model is better to predict the potential patient.
+
+### 3-1. Logistic Regression
+
+Detailed study of logistic regression of the heart disease dataframe can
+be found in [hd\_log\_reg](https://github.com/danypark91/hd_log_reg).
+The repository consists extensive step-by-step data analysis using
+logistic regression. The underlying statistical logic, data
+visualization and the prediciton results are well explained. The below
+code is directly extracted from the repository to compare the result
+with K-nearest neighbor and Decision Tree Classification.
+
+``` r
+#Logistic Regression Model
+library(MASS)
+df_model.part <- glm(target~sex+cp+trestbps+thalach+oldpeak+ca, data=train_dt_df, family=binomial(link="logit"))
+df_model_fit <- predict(df_model.part, newdata=test_dt_df, type="response")
+df_model_confmat <- ifelse(df_model_fit >0.5, 1, 0)
+
+df_log_conf <- confusionMatrix(factor(df_model_confmat), factor(test_dt_df$target), positive=as.character(1))
+df_log_conf
+```
+
     ## Confusion Matrix and Statistics
     ## 
     ##           Reference
@@ -445,11 +473,39 @@ accurate model.
     ##        'Positive' Class : 1               
     ## 
 
+``` r
+df_prediction <- prediction(df_model_fit, test_dt_df$target)
+df_performance <- performance(df_prediction, measure = "tpr", x.measure="fpr")
+
+plot(df_performance, col = "Red", 
+     main = "ROC Curve - Logistic Regression",
+     xlab="False Postiive Rate", ylab="True Positive Rate")+
+  abline(a=0, b=1, col= "Grey", lty=2)+
+  abline(v=0, h=1, col= "Blue", lty=3)+
+  plot(df_performance, col = "Red", 
+       main = "ROC Curve - Logistic Regression",
+       xlab="False Postiive Rate", ylab="True Positive Rate",add=TRUE)
+```
+
 ![](hd_knn_tree_files/figure-gfm/Logistic%20Regression-1.png)<!-- -->
 
     ## integer(0)
 
+``` r
+df_auc <- performance(df_prediction, measure = "auc")
+df_auc <- df_auc@y.values[[1]]
+print(paste("AUC Score: ", lapply(df_auc,round,4)))
+```
+
     ## [1] "AUC Score:  0.8696"
+
+### 3-2. Metrics Dataframe
+
+To vizualize the important metrics, important figures are gathered to
+create a separate dataframe. In this case, it will be easier to
+visualize the comparison using `ggplot`. The gathered metrics are
+accuracy with its confidence intervals, sensitivity, specificity, f1
+score and auc score.
 
     ##                  type       acc     lowci      upci      sens      spec
     ## 1 Logistic Regression 0.7790698 0.6766886 0.8614339 0.7659574 0.7948718
@@ -459,6 +515,8 @@ accurate model.
     ## 1 0.7912088 0.8696127
     ## 2 0.8421053 0.9026187
     ## 3 0.7741935 0.7558647
+
+### 3-3. Graphical Presentation
 
     ## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
 
