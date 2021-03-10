@@ -284,7 +284,8 @@ df_auc <- df_auc@y.values[[1]]
 print(paste("AUC Score: ", lapply(df_auc,round,4)))
 ```
 
-
+### 3-2. Metrics Dataframe
+To vizualize the important metrics, important figures are gathered to create a separate dataframe. In this case, it will be easier to visualize the comparison using `ggplot`. The gathered metrics are accuracy with its confidence intervals, sensitivity, specificity, f1 score and auc score. 
 ```{r Summary Dataframe, echo=FALSE}
 #Model Fit summary dataframe
 df_ci <- data.frame(type=c("Logistic Regression", "9-Nearest Neighbor", "Decision Tree"), 
@@ -297,6 +298,9 @@ df_ci <- data.frame(type=c("Logistic Regression", "9-Nearest Neighbor", "Decisio
                     auc =c(df_auc, df_knn_auc, df_dt_auc))
 head(df_ci,3)
 ```
+
+### 3-3. Graphical Presentation
+
 
 ```{r Accuracy Comparison, echo=FALSE}
 #Accuracy Comparison with 95% Confidence Interval
