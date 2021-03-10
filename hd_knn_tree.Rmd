@@ -251,9 +251,13 @@ df_dt_auc
 
 ```
 
-## 3. Comparison with other Model
 
-```{r Logistic Regression, echo=FALSE, fig.height=5, fig.width=6}
+## 3. Comparison with other Model
+The Previous chapters and other project applied various classification algorithms. All those algorithms have advantages over one another. For the Heart Disease dataframe, Logistic regression, K-nearest neighbor and the Decision Tree are chosen. Each classification has advantages to one another. This chapter will compare the result of those methods and distinguish which model is better to predict the potential patient.
+
+### 3-1. Logistic Regression
+Detailed study of logistic regression of the heart disease dataframe can be found in [hd_log_reg](https://github.com/danypark91/hd_log_reg). The repository consists extensive step-by-step data analysis using logistic regression. The underlying statistical logic, data visualization and the prediciton results are well explained. The below code is directly extracted from the repository to compare the result with K-nearest neighbor and Decision Tree Classification. 
+```{r Logistic Regression, echo=TRUE, fig.height=5, fig.width=6}
 #Logistic Regression Model
 library(MASS)
 df_model.part <- glm(target~sex+cp+trestbps+thalach+oldpeak+ca, data=train_dt_df, family=binomial(link="logit"))
