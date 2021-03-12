@@ -525,7 +525,13 @@ number of all correct predictions over the total test datasets. The
 maximum value that can be achieved is 1.0 whereas the minimum is 0.0. Of
 course, higher score indicates the better predictability.
 
-![Accuracy](https://miro.medium.com/max/1594/0*qLxAWTs-gZjQvTi4.jpg)
+$$ Accuracy = \\frac{(TP + TN)}{(TP + TN + FP + FN)} $$
+where:
+
+-   TP = True Positive
+-   TN = True Negative
+-   FP = False Positive
+-   FN = False Negative
 
 The graph shows that the accuracy of the 9-nearest neighbor
 classification is the best for the classification. 82.56% of the
@@ -558,9 +564,16 @@ rate(TPR). Similar to the accuracy, the maximum possible score is 1.0
 and the minimum is 0.0. For this dataset, we can interpret that its the
 ability to detect positive cases on patients who do have the heart
 disease. High sensitivity could mean that the chances for misdiagnosing,
-not carrying the disease, is low.
+not carrying the disease, is low. In addition, this is the key metrics
+in health dataset as it is directly related to the type II error. In any
+prediction related to the patient’s health, type II error could have
+tremendous impact.
 
-![Sensitivity](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkPXLPkgi83GeXqAdt4v2qlZ_pGDimbNzlNXhHF8Mo2t8aqAx7runRRd7SpBaYQNslI0M&usqp=CAU)
+$$ Sensitivity = \\frac{TP}{(TP + FN)} $$
+where:
+
+-   TP = True Positive
+-   FN = False Negative
 
 The 9-nearest neighbor classfication has the highest sensitivity score
 of 85.11%. The decision tree followed with 80.85% and finally the
@@ -570,16 +583,69 @@ having bogus heart diease.
 
 ![](hd_knn_tree_files/figure-gfm/Sensitivity-1.png)<!-- -->
 
+-   Specificity
+
+Specificity is derived as the number of true negative over the total
+number of negatives. It is also known as True Negative Rtae(TNR).
+Similar to the sensitivity, the best measure is 1.0 and the worst is
+0.0. Specificity important to correctly reject the patients without the
+heart disease. As specificity includes Type I error, it may not have as
+devastating result as sensitivity.
+
+$$Specificity = \\frac{TN}{(TN + FP)}$$
+where:
+
+-   TN = True Negative
+-   FP = False Positive
+
+The 9-nearest neighbor and the logistic regression has the same
+specificity of 79.49%. It means that they have the same ability to
+detact the patient without the disease. Followed by the decision tree
+with the specificity of 71.79%.
+
 ![](hd_knn_tree_files/figure-gfm/Specificity-1.png)<!-- -->
 
 -   F1 Score
 
-![F1](https://miro.medium.com/max/752/1*UJxVqLnbSj42eRhasKeLOA.png)
+F1 score is another way to statistically measure the accuracy of the
+classification. F1 score is the weighted average of the precision and
+recall. Recall is, as we already know, same as the Sensitivity.
+Precision measures the positivity of the positively predicted class. The
+best value is 1.0 and worst score of 0.0. In this dataset, F1 score
+would indicate the harmonic average between the positively predicted
+versus actual heart disease patients.
 
+![Insight](https://newbiettn.github.io/images/confusion-matrix-noted.jpg)
+
+$$ F\_1 = \\frac{2}{recall^{-1} + precision^{-1}} = \\frac{TP}{TP+\\frac{1}{2}(FP + FN)}$$
+The 9-nearest neighbor has the highest F1 score of 84.21%. Decision Tree
+and logistic regression has very similar F1 score with decision tree has
+slightly higher score of 79.17%.
 ![](hd_knn_tree_files/figure-gfm/F1-1.png)<!-- -->
+
+-   ROC and AUC
+
+The mixture of the ROC curve makes difficult to determine which
+classification method is better in predicting. The overlapping curves
+makes it difficult to rank. In such cases, comparing ROC Curve is not
+the efficient method. However, AUC quantifies the ROC curve and hence
+helps to easily compare between the models. The maximum AUC is 1.0 and
+the lowest of 0.0. AUC of the 9-nearest neighbor is 0.9026 which is very
+close to 1.0. Logistic Regression ranked next with the AUC of 0.8696 and
+Decision Tree of 0.7608.
 
     ## integer(0)
 
 ![](hd_knn_tree_files/figure-gfm/ROC%20Comparison-1.png)<!-- -->
 
 ![](hd_knn_tree_files/figure-gfm/AUC%20Score-1.png)<!-- -->
+
+We can conclude that for the heart disease dataset, 9-nearest neighbor
+classification has the highest metrics for the important scores that
+could be derived from the predicted model. Especially the accuracy and
+F1 score of the KNN mounts over the other classifier, which are directly
+related to the performance of the predicted model. Hence to successfully
+predict the potiential heart disease patients, it is highly recommended
+to use 9-nearest neighbor method. Of course, the series of the medical
+test should be carefully conducted as the model isn’t able to perfectly
+detact the patients.
