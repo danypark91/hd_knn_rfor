@@ -518,6 +518,23 @@ score and auc score.
 
 ### 3-3. Graphical Presentation
 
+-   Accuracy
+
+The first comparison is the accuracy of the prediciton. Accuracy is the
+number of all correct predictions over the total test datasets. The
+maximum value that can be achieved is 1.0 whereas the minimum is 0.0. Of
+course, higher score indicates the better predictability.
+
+![Accuracy](https://miro.medium.com/max/1594/0*qLxAWTs-gZjQvTi4.jpg)
+
+The graph shows that the accuracy of the 9-nearest neighbor
+classification is the best for the classification. 82.56% of the
+patients were classified correctly if KNN algorithm was applied.
+Followed by the logistic regression, 77.91% and the decision tree,
+76.74%. This result indicates that applying KNN algorithm to the
+dataframe has the highest likelihood of correctly predicting the heart
+disease.
+
     ## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
 
     ## v tibble  3.0.4     v dplyr   1.0.2
@@ -533,11 +550,33 @@ score and auc score.
 
 ![](hd_knn_tree_files/figure-gfm/Accuracy%20Comparison-1.png)<!-- -->
 
-![](hd_knn_tree_files/figure-gfm/F1-1.png)<!-- -->
+-   Sensitivity
+
+Sensitivity is the number of correct positive predictions by the total
+number of positives. It is also called as recall or true positive
+rate(TPR). Similar to the accuracy, the maximum possible score is 1.0
+and the minimum is 0.0. For this dataset, we can interpret that its the
+ability to detect positive cases on patients who do have the heart
+disease. High sensitivity could mean that the chances for misdiagnosing,
+not carrying the disease, is low.
+
+![Sensitivity](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkPXLPkgi83GeXqAdt4v2qlZ_pGDimbNzlNXhHF8Mo2t8aqAx7runRRd7SpBaYQNslI0M&usqp=CAU)
+
+The 9-nearest neighbor classfication has the highest sensitivity score
+of 85.11%. The decision tree followed with 80.85% and finally the
+logistic regression with 76.60%. This means when a set of positive
+results comes in, KNN is least likely to falsely diagnose patients
+having bogus heart diease.
 
 ![](hd_knn_tree_files/figure-gfm/Sensitivity-1.png)<!-- -->
 
 ![](hd_knn_tree_files/figure-gfm/Specificity-1.png)<!-- -->
+
+-   F1 Score
+
+![F1](https://miro.medium.com/max/752/1*UJxVqLnbSj42eRhasKeLOA.png)
+
+![](hd_knn_tree_files/figure-gfm/F1-1.png)<!-- -->
 
     ## integer(0)
 
