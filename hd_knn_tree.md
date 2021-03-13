@@ -525,7 +525,8 @@ number of all correct predictions over the total test datasets. The
 maximum value that can be achieved is 1.0 whereas the minimum is 0.0. Of
 course, higher score indicates the better predictability.
 
-$$ Accuracy = \\frac{(TP + TN)}{(TP + TN + FP + FN)} $$
+![Accuracy = \\frac{(TP + TN)}{(TP + TN + FP + FN)}](https://latex.codecogs.com/png.latex?Accuracy%20%3D%20%5Cfrac%7B%28TP%20%2B%20TN%29%7D%7B%28TP%20%2B%20TN%20%2B%20FP%20%2B%20FN%29%7D "Accuracy = \frac{(TP + TN)}{(TP + TN + FP + FN)}")
+
 where:
 
 -   TP = True Positive
@@ -569,7 +570,8 @@ in health dataset as it is directly related to the type II error. In any
 prediction related to the patient’s health, type II error could have
 tremendous impact.
 
-$$ Sensitivity = \\frac{TP}{(TP + FN)} $$
+![Sensitivity = \\frac{TP}{(TP + FN)}](https://latex.codecogs.com/png.latex?Sensitivity%20%3D%20%5Cfrac%7BTP%7D%7B%28TP%20%2B%20FN%29%7D "Sensitivity = \frac{TP}{(TP + FN)}")
+
 where:
 
 -   TP = True Positive
@@ -592,7 +594,9 @@ Similar to the sensitivity, the best measure is 1.0 and the worst is
 heart disease. As specificity includes Type I error, it may not have as
 devastating result as sensitivity.
 
-$Specificity = \\frac{TN}{(TN + FP)}$ where:
+![Specificity = \\frac{TN}{(TN + FP)}](https://latex.codecogs.com/png.latex?Specificity%20%3D%20%5Cfrac%7BTN%7D%7B%28TN%20%2B%20FP%29%7D "Specificity = \frac{TN}{(TN + FP)}")
+
+where:
 
 -   TN = True Negative
 -   FP = False Positive
@@ -616,10 +620,12 @@ versus actual heart disease patients.
 
 ![Insight](https://newbiettn.github.io/images/confusion-matrix-noted.jpg)
 
-$$ F\_1 = \\frac{2}{recall^{-1} + precision^{-1}} = \\frac{TP}{TP+\\frac{1}{2}(FP + FN)}$$
+![F\_1 = \\frac{2}{recall^{-1} + precision^{-1}} = \\frac{TP}{TP+\\frac{1}{2}(FP + FN)}](https://latex.codecogs.com/png.latex?F_1%20%3D%20%5Cfrac%7B2%7D%7Brecall%5E%7B-1%7D%20%2B%20precision%5E%7B-1%7D%7D%20%3D%20%5Cfrac%7BTP%7D%7BTP%2B%5Cfrac%7B1%7D%7B2%7D%28FP%20%2B%20FN%29%7D "F_1 = \frac{2}{recall^{-1} + precision^{-1}} = \frac{TP}{TP+\frac{1}{2}(FP + FN)}")
+
 The 9-nearest neighbor has the highest F1 score of 84.21%. Decision Tree
 and logistic regression has very similar F1 score with decision tree has
 slightly higher score of 79.17%.
+
 ![](hd_knn_tree_files/figure-gfm/F1-1.png)<!-- -->
 
 -   ROC and AUC
