@@ -306,6 +306,7 @@ head(df_ci,3)
 The first comparison is the accuracy of the prediciton. Accuracy is the number of all correct predictions over the total test datasets. The maximum value that can be achieved is 1.0 whereas the minimum is 0.0. Of course, higher score indicates the better predictability.
 
 $$ Accuracy = \frac{(TP + TN)}{(TP + TN + FP + FN)} $$
+
 where:
 
 * TP = True Positive
@@ -334,6 +335,7 @@ ggplot(data=df_ci, aes(type,acc))+
 Sensitivity is the number of correct positive predictions by the total number of positives. It is also called as recall or true positive rate(TPR). Similar to the accuracy, the maximum possible score is 1.0 and the minimum is 0.0. For this dataset, we can interpret that its the ability to detect positive cases on patients who do have the heart disease. High sensitivity could mean that the chances for misdiagnosing, not carrying the disease, is low. In addition, this is the key metrics in health dataset as it is directly related to the type II error. In any prediction related to the patient's health, type II error could have tremendous impact.
 
 $$ Sensitivity = \frac{TP}{(TP + FN)} $$
+
 where:
 
 * TP = True Positive
@@ -355,7 +357,8 @@ ggplot(data=df_ci, aes(type, sens))+
 
 Specificity is derived as  the number of true negative over the total number of negatives. It is also known as True Negative Rtae(TNR). Similar to the sensitivity, the best measure is 1.0 and the worst is 0.0. Specificity important to correctly reject the patients without the heart disease. As specificity includes Type I error, it may not have as devastating result as sensitivity.
 
-$Specificity = \frac{TN}{(TN + FP)}$
+$$Specificity = \frac{TN}{(TN + FP)}$$
+
 where:
 
 * TN = True Negative
@@ -380,7 +383,9 @@ F1 score is another way to statistically measure the accuracy of the classificat
 ![Insight](https://newbiettn.github.io/images/confusion-matrix-noted.jpg)
 
 $$ F_1 = \frac{2}{recall^{-1} + precision^{-1}} = \frac{TP}{TP+\frac{1}{2}(FP + FN)}$$
+
 The 9-nearest neighbor has the highest F1 score of 84.21%. Decision Tree and logistic regression has very similar F1 score with decision tree has slightly higher score of 79.17%. 
+
 ```{r F1, echo=FALSE}
 #F1 Score
 ggplot(data=df_ci, aes(type, f1))+
