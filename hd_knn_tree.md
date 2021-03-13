@@ -592,12 +592,7 @@ Similar to the sensitivity, the best measure is 1.0 and the worst is
 heart disease. As specificity includes Type I error, it may not have as
 devastating result as sensitivity.
 
-$$
-Specificity = \\frac{TN}{(TN+FP)}
-$$
-
-$$Specificity = \\frac{TN}{(TN + FP)}$$
-where:
+$Specificity = \\frac{TN}{(TN + FP)}$ where:
 
 -   TN = True Negative
 -   FP = False Positive
