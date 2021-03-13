@@ -355,6 +355,11 @@ ggplot(data=df_ci, aes(type, sens))+
 
 Specificity is derived as  the number of true negative over the total number of negatives. It is also known as True Negative Rtae(TNR). Similar to the sensitivity, the best measure is 1.0 and the worst is 0.0. Specificity important to correctly reject the patients without the heart disease. As specificity includes Type I error, it may not have as devastating result as sensitivity.
 
+\[
+Specificity = \frac{TN}{(TN+FP)}
+\]
+
+
 $$Specificity = \frac{TN}{(TN + FP)}$$
 where:
 
